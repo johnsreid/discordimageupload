@@ -5,14 +5,26 @@
 		<title>Upload to Discord</title>
 		<script>
 			function getKey() {
-				var url_string = window.location.href;
-				var url = new URL(url_string);
-				var c = url.searchParams.get('key');
+				if ('function' !== typeof URL) {
+					var url_string = window.location.href;
+					var pathArray = window.location.href.split( 'key=' );
+					var c = pathArray[1];
+				} else {
+					var url_string = window.location.href;
+					var url = new URL(url_string);
+					var c = url.searchParams.get('key');
+				}
+				
 				return c;
 			}
 			
+			// A bit of a poor fallback of browsers that can't deal with jQuery.
+			window.onload = function() {
+				var uploadForm = document.getElementById('discordUploader');
+				document.uploadForm.action = 'https://discordapp.com/api/webhooks/' + getKey();
+			}
+			
 			$(function() {
-			//alert($('#discordUpdater').attr('id');
 				var url = 'https://discordapp.com/api/webhooks/' + getKey();
 			
 				$('#discordUploader').submit(function(e) {			
