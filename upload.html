@@ -1,0 +1,89 @@
+<html>
+	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+		<meta charset="UTF-8">
+		<title>Upload to Discord</title>
+		<script>
+			function getKey() {
+				var url_string = window.location.href;
+				var url = new URL(url_string);
+				var c = url.searchParams.get('key');
+				return c;
+			}
+			
+			$(function() {
+			//alert($('#discordUpdater').attr('id');
+				var url = 'https://discordapp.com/api/webhooks/' + getKey();
+			
+				$('#discordUploader').submit(function(e) {			
+					e.preventDefault();
+					
+					var data = new FormData();
+					jQuery.each(jQuery('#image')[0].files, function(i, file) {
+						data.append('file-'+i, file);
+					});
+					
+					$.ajax({
+						type: 'POST',
+						url: url,
+						data: data,
+						processData: false,
+						contentType: false,
+						success: function() {
+							$('#discordUploader')[0].reset();
+							$('.hidden').show();
+							setTimeout(function() {
+								$('.hidden').fadeOut('show');
+							}, 5000);
+						}
+					});
+				});
+				
+				
+			});
+		</script>
+		<style type="text/css">
+			body {
+				font-family: Arial, sans-serif;
+				background: #2C2F33;
+				color: #fff;
+			}
+			.hidden {
+				display: none;
+				border: 1px solid #addfad;
+				background: #d0f0c0;
+				margin: 10px 0;
+				padding: 10px;
+				color: #000;
+			}
+			form input {
+				display: block;
+				font-size: 1.2em;
+				margin-top: 5px;
+			}
+			form input[type="submit"] {
+				width: 100%;
+				font-size: 2em;
+				background: #7289DA;
+				color: #fff;
+				border: 1px solid #23272A;
+				padding: 1em;
+				border-radius: 0.3em;
+			}
+			form input[type="submit"]:hover {
+				border-color: #99AAB5;
+			}
+			form input[type="submit"]:active {
+				border-color: #fff;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div class="hidden">The image has been posted</div>
+		<form id="discordUploader" enctype="multipart/form-data" action="https://discordapp.com/api/webhooks/" method="post">
+			<input type="file" id="image" name="image" accept="image/png, image/jpeg">
+			<input type="Submit" value="Upload">
+		</form>
+	</body>
+</html>
